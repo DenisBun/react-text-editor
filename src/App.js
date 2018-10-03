@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
-// import injector from 'react-frame-aware-selection-plugin';
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker, Emoji } from 'emoji-mart'
 
-// import { TextEditor } from './editor';
+
 import Editor from './Editor';
 import './App.css';
  
-// injector(); https://github.com/airbnb/enzyme/issues/47
 
 class App extends Component {
+  state = {
+    emojies: []
+  }
+  addEmoji = smth => this.setState({emojies: [...this.state.emojies, smth]})
   render() {
     return (
       <div className="App">
         <Editor placeholder="Let the magic happen" />
+        <Picker onSelect={this.addEmoji} />
+        {this.state.emojies.map(emoji => (
+          <Emoji emoji={{...emoji}} size={15} />
+        ))}
       </div>
     );
   }

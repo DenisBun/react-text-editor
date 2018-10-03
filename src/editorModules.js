@@ -20,12 +20,12 @@ const quillModules = {
     [{'list': 'ordered'}, {'list': 'bullet'}, 
      {'indent': '-1'}, {'indent': '+1'}],
     ['link', 'image', 'video'],
-    ['clean']
+    ['clean'],
   ],
   clipboard: {
     // toggle to add extra line breaks when pasting HTML:
     matchVisual: false,
-  }
+  },
 };
 
 export default quillModules;
