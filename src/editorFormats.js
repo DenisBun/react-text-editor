@@ -6,7 +6,7 @@ const quilFormats = [
   'header', 'font', 'size',
   'bold', 'italic', 'underline', 'strike', 'blockquote',
   'list', 'bullet', 'indent',
-  'link', 'image', 'video'
+  'link', 'image', 'video', 'color'
 ];
 
 export default quilFormats;

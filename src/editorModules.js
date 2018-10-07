@@ -5,6 +5,11 @@ import ImageResize from 'quill-image-resize-module';
 Quill.register('modules/imageResize', ImageResize);
 Quill.register('modules/imageDrop', ImageDrop);
 
+const Link = Quill.import('formats/link');
+Link.sanitize = function(url) {
+  console.log(url)
+  return url;
+}
 /* 
  * Quill modules to attach to editor
  * See https://quilljs.com/docs/modules/ for complete options
@@ -15,10 +20,10 @@ const quillModules = {
   imageResize: {},
   toolbar: [
     [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-    [{size: []}],
+    [{ 'color': [] }],
+    [{ 'size': [] }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{'list': 'ordered'}, {'list': 'bullet'}, 
-     {'indent': '-1'}, {'indent': '+1'}],
+    [{'list': 'ordered'}, {'list': 'bullet'}],
     ['link', 'image', 'video'],
     ['clean'],
   ],

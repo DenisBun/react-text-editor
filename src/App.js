@@ -15,7 +15,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Editor placeholder="Let the magic happen" />
+        <Editor placeholder={`It is a time to create your awesome event!
+        \nStart typing something to let the magic happen...`} />
         <Picker onSelect={this.addEmoji} />
         {this.state.emojies.map(emoji => (
           <Emoji emoji={{...emoji}} size={15} />
