@@ -12,3 +12,6 @@ some useful links to check out:
  - https://stackoverflow.com/questions/44879703/recognize-new-line-in-quill-js
  - https://github.com/zenoamaro/react-quill/issues/356
  - https://quilljs.com/docs/modules/clipboard/ (might be useful)
+
+ somehow handle on image/on video upload event and add an additional description text field
+ button on hover(click) -> document.querySelector('.App .ql-tooltip').style.display.flex ( + some additional styles). It will be automatically hidden be text selection

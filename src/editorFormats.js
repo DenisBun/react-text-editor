@@ -3,7 +3,7 @@
  * See https://quilljs.com/docs/formats/
  */
 const quilFormats = [
-  'header', 'font', 'size',
+  'header',
   'bold', 'italic', 'underline', 'strike', 'blockquote',
   'list', 'bullet', 'indent',
   'link', 'image', 'video', 'color'

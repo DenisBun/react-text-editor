@@ -1,0 +1,64 @@
+.App .ql-container {
+  color: #090909;
+	max-width: 600px;
+  margin: 65px auto 45px;
+	box-shadow: rgba(118, 143, 255, 0.1) 0px 16px 24px 0px;
+	margin: 65px auto 45px;
+  border-radius: 4.5px;
+  border-bottom-left-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 16px;
+  text-align: left;
+}
+
+/* Reset snow theme styles and used it just for the link */
+.App .ql-toolbar.ql-snow {
+  display: none;
+}
+
+.App .ql-container.ql-snow {
+  border: none;
+}
+
+/* Bubble Theme */
+.App .ql-bubble .ql-editor {
+  border-radius: 0.5em;
+}
+
+.App .ql-editor {
+  min-height: 18em;
+  overflow-y: initial;
+}
+
+.App .ql-editor h1 {
+  font-size: 42px;
+  line-height: 57px;
+  position: relative;
+  margin-bottom: 24px; 
+}
+
+.App .ql-editor h1:after {
+  content: ''; 
+  width: 36px; 
+  height: 1px; 
+  background:#D0D0D0; 
+  position: absolute; 
+  bottom: -4px;
+  left: 0;
+}
+
+.App .ql-editor h2 {
+  font-size: 30px;
+  line-height: 41px;
+  padding-bottom: 24px;
+}
+
+.App .ql-editor blockquote {
+  border-left: 7px solid #090909;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 27px;
+  margin: 0;
+  padding-left: 18px;
+}

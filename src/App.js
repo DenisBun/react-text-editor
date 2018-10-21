@@ -8,19 +8,18 @@ import './App.css';
  
 
 class App extends Component {
-  state = {
-    emojies: []
-  }
-  addEmoji = smth => this.setState({emojies: [...this.state.emojies, smth]})
+  // state = {
+  //   emojies: []
+  // }
+  // addEmoji = smth => this.setState({emojies: [...this.state.emojies, smth]})
   render() {
     return (
       <div className="App">
-        <Editor placeholder={`It is a time to create your awesome event!
-        \nStart typing something to let the magic happen...`} />
-        <Picker onSelect={this.addEmoji} />
+        <Editor headline="<h1>Default headline<h1>" />
+        {/* <Picker onSelect={this.addEmoji} />
         {this.state.emojies.map(emoji => (
           <Emoji emoji={{...emoji}} size={15} />
-        ))}
+        ))} */}
       </div>
     );
   }

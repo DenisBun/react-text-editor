@@ -1,29 +1,13 @@
-.App {
-	color: rgb(17, 17, 17);
-	max-width: 740px;
-	background-color: rgb(255, 255, 255);
-	box-shadow: rgba(118, 143, 255, 0.1) 0px 16px 24px 0px;
-	margin: 65px auto 45px;
-	border-radius: 4.5px;
+html {
+	height: 100%;
 }
 
-.App .ql-container {
-  border-bottom-left-radius: 0.5em;
-  border-bottom-right-radius: 0.5em;
-  background: #fefcfc;
+body {
+	min-height: 100vh;
+	margin: 0;
+	padding: 0;
+  background-color: #FFFFFF;
+  font-family: 'Noto Sans', sans-serif;
 }
 
 
-/* Bubble Theme */
-.App .ql-bubble .ql-editor {
-  border-radius: 0.5em;
-}
-
-.App .ql-editor {
-  min-height: 18em;
-}
-
-.themeSwitcher {
-  margin-top: 0.5em;
-  font-size: small;
-}

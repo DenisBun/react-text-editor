@@ -1,5 +1,5 @@
 import { Quill } from 'react-quill';
-import {ImageDrop} from 'quill-image-drop-module';
+import { ImageDrop } from 'quill-image-drop-module';
 import ImageResize from 'quill-image-resize-module';
 
 Quill.register('modules/imageResize', ImageResize);
@@ -19,9 +19,8 @@ const quillModules = {
   imageDrop: true,
   imageResize: {},
   toolbar: [
-    [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-    [{ 'color': [] }],
-    [{ 'size': [] }],
+    [{'header': '2'}],
+    [{ 'color': ['black', 'red', 'green', 'blue'] }],
     ['bold', 'italic', 'underline', 'strike', 'blockquote'],
     [{'list': 'ordered'}, {'list': 'bullet'}],
     ['link', 'image', 'video'],
