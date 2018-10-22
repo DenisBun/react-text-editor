@@ -10,30 +10,48 @@ import './Editor.css';
 
 class Editor extends React.Component {
 
+  static propTypes = {
+    headline: PropTypes.string,
+  };
+
+  static defaultProps = {
+    headline: '<h1>Default headline<h1>'
+  };
+
   state = { 
     editorHtml: this.props.headline,
     theme: 'bubble',
+    isSideMenu: false,
   };
 
   handleFocus = () => {
-    this.quill.editor.theme.tooltip.edit();
-    this.quill.editor.theme.tooltip.show();
+    this.setState({ isSideMenu: true }, () => {
+      this.quill.editor.theme.tooltip.edit();
+      this.quill.editor.theme.tooltip.show();
+    });    
   };
 
   handleChange = html => 	this.setState({ editorHtml: html });
 
   handleAdditionalMenu = () => {
-    const cursorBounds = this.quill.editor.getBounds(this.quill.editor.getSelection() ? this.quill.editor.getSelection().index : 1);
-    console.log(cursorBounds);
-    this.additionalMenu.style = {
-      position: 'absolute',
-      color: 'blue',
-      ...cursorBounds
-    }
+    // https://stackoverflow.com/a/3545073
+    const selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+    selection.toString() !== '' && this.state.isSideMenu === true && this.setState({ isSideMenu: false }, () => this.quill.editor.theme.tooltip.show());
+    
+    console.log(this.state.isSideMenu);
+
+    // const cursorBounds = this.quill.editor.getBounds(this.quill.editor.getSelection() ? this.quill.editor.getSelection().index : 1);
+    // console.log(cursorBounds);
+    // this.additionalMenu.style = {
+    //   position: 'absolute',
+    //   color: 'blue',
+    //   ...cursorBounds
+    // }
   };
 
   componentDidMount() {
-    document.querySelector(".ql-editor").addEventListener("click", this.handleAdditionalMenu);
+   // document.querySelector(".ql-editor").addEventListener("mouseup", this.handleAdditionalMenu);
+    document.body.addEventListener('mouseup', this.handleAdditionalMenu);
 
     // https://github.com/quilljs/quill/issues/109
     this.quill.editor.clipboard.addMatcher(Node.TEXT_NODE, function(node, delta) {
@@ -65,22 +83,22 @@ class Editor extends React.Component {
   };
 
   componentWillUnmount() {
-    document.querySelector(".ql-editor").removeEventListener("click", this.handleAdditionalMenu);
+    document.body.removeEventListener('mouseup',this.handleAdditionalMenu);
   };   
   
   render () {
+    const { isSideMenu, theme, editorHtml } = this.state;
     return (
       <Fragment>
         <ReactQuill
           ref={node => this.quill = node} 
-          theme={this.state.theme}
+          theme={theme}
           onChange={this.handleChange}
-          value={this.state.editorHtml}
-          modules={quillModules}
+          value={editorHtml}
+          modules={quillModules(isSideMenu)}
           formats={quilFormats}
           bounds={'.App'}
-          placeholder={this.props.placeholder}
-         />
+        />
         <button
           style={{color: 'red'}} 
           ref={node => this.additionalMenu = node}
@@ -91,10 +109,6 @@ class Editor extends React.Component {
       </Fragment>
      )
   }
-}
-
-Editor.propTypes = {
-  placeholder: PropTypes.string,
 }
 
 export default Editor;

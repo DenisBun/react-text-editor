@@ -15,7 +15,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Editor headline="<h1>Default headline<h1>" />
+        <Editor headline="<h1>Let the magic happen<h1>" />
         {/* <Picker onSelect={this.addEmoji} />
         {this.state.emojies.map(emoji => (
           <Emoji emoji={{...emoji}} size={15} />
