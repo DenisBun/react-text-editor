@@ -1,4 +1,5 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import ReactQuill from 'react-quill';
 import quillModules from './editorModules';
@@ -8,55 +9,87 @@ import 'react-quill/dist/quill.bubble.css';
 import 'react-quill/dist/quill.snow.css';
 import './Editor.css';
 
-class Editor extends React.Component {
-
+class Editor extends Component {
   static propTypes = {
     headline: PropTypes.string,
   };
 
   static defaultProps = {
-    headline: '<h1>Default headline<h1>'
+    headline: '<h1>Default headline<h1>',
   };
 
-  state = { 
+  state = {
     editorHtml: this.props.headline,
     theme: 'bubble',
     isSideMenu: false,
   };
 
-  handleFocus = () => {
-    this.setState({ isSideMenu: true }, () => {
-      this.quill.editor.theme.tooltip.edit();
-      this.quill.editor.theme.tooltip.show();
-    });    
+  sideMenuButtonStyle = {
+    display: 'none',
+    position: 'absolute',
+    left: '15px',
   };
 
-  handleChange = html => 	this.setState({ editorHtml: html });
+  handleFocus = () => {
+    this.state.isSideMenu
+      ? this.setState({ isSideMenu: false }, () => {
+          this.quill.editor.theme.tooltip.edit();
+          this.quill.editor.theme.tooltip.hide();
+        })
+      : this.setState({ isSideMenu: true }, () => {
+          this.quill.editor.theme.tooltip.edit();
+          this.quill.editor.theme.tooltip.show();
+        });
+  };
+
+  handleChange = html => this.setState({ editorHtml: html });
 
   handleAdditionalMenu = () => {
     // https://stackoverflow.com/a/3545073
-    const selection = window.getSelection ? window.getSelection() : document.selection.createRange();
-    selection.toString() !== '' && this.state.isSideMenu === true && this.setState({ isSideMenu: false }, () => this.quill.editor.theme.tooltip.show());
-    
-    console.log(this.state.isSideMenu);
+    const selection = window.getSelection
+      ? window.getSelection()
+      : document.selection.createRange();
+    selection.toString() !== '' &&
+      this.state.isSideMenu &&
+      this.setState({ isSideMenu: false }, () =>
+        this.quill.editor.theme.tooltip.show()
+      );
+  };
 
-    // const cursorBounds = this.quill.editor.getBounds(this.quill.editor.getSelection() ? this.quill.editor.getSelection().index : 1);
-    // console.log(cursorBounds);
-    // this.additionalMenu.style = {
-    //   position: 'absolute',
-    //   color: 'blue',
-    //   ...cursorBounds
-    // }
+  handleThemeChange = () => {
+    this.setState((prevState, props) => ({
+      theme: prevState.theme !== 'bubble' ? 'bubble' : 'snow',
+    }));
+  };
+
+  handeSideButtonPosition = () => {
+    const cursorBounds = this.quill.editor.getBounds(
+      this.quill.editor.getSelection()
+        ? this.quill.editor.getSelection().index
+        : 1
+    );
+    console.log(cursorBounds);
+    this.sideMenuButtonStyle = {
+      display: 'block',
+      top: cursorBounds.top,
+    };
   };
 
   componentDidMount() {
-   // document.querySelector(".ql-editor").addEventListener("mouseup", this.handleAdditionalMenu);
-    document.body.addEventListener('mouseup', this.handleAdditionalMenu);
+    document
+      .querySelector('.quill')
+      .addEventListener('mouseup', this.handleAdditionalMenu);
+    document
+      .querySelector('.quill')
+      .addEventListener('click', this.handeSideButtonPosition);
 
     // https://github.com/quilljs/quill/issues/109
-    this.quill.editor.clipboard.addMatcher(Node.TEXT_NODE, function(node, delta) {
+    this.quill.editor.clipboard.addMatcher(Node.TEXT_NODE, function(
+      node,
+      delta
+    ) {
       const regex = /https?:\/\/[^\s]+/g;
-      if (typeof(node.data) !== 'string') return;
+      if (typeof node.data !== 'string') return;
       const matches = node.data.match(regex);
       if (matches && matches.length > 0) {
         const ops = [];
@@ -70,28 +103,40 @@ class Editor extends React.Component {
         });
         ops.push({ insert: str });
         delta.ops = ops;
-      }    
+      }
       return delta;
     });
-  };
+  }
 
-  componentDidUpdate() {   
-    // document.querySelectorAll('a').forEach(a => a.addEventListener('mouseover', () => this.setState({theme: 'snow'})));
-    // document.querySelectorAll('.ql-editor').forEach(a => a.addEventListener('keypress', () => {
-    //     if(this.state.theme!=='bubble') this.setState({theme: 'bubble'})
-    // }));
-  };
+  componentDidUpdate() {
+    document
+      .querySelectorAll('a')
+      .forEach(a =>
+        a.addEventListener('mouseover', () => this.setState({ theme: 'snow' }))
+      );
+    this.state.theme === 'snow' &&
+      document
+        .querySelector('.ql-snow .ql-tooltip')
+        .addEventListener('mouseleave', () => {
+          if (this.state.theme !== 'bubble') this.setState({ theme: 'bubble' });
+        });
+  }
 
   componentWillUnmount() {
-    document.body.removeEventListener('mouseup',this.handleAdditionalMenu);
-  };   
-  
-  render () {
+    document
+      .querySelector('.quill')
+      .removeEventListener('mouseup', this.handleAdditionalMenu);
+    document
+      .querySelector('.quill')
+      .removeEventListener('click', this.handeSideButtonPosition);
+  }
+
+  render() {
     const { isSideMenu, theme, editorHtml } = this.state;
     return (
       <Fragment>
         <ReactQuill
-          ref={node => this.quill = node} 
+          ref={node => (this.quill = node)}
           theme={theme}
           onChange={this.handleChange}
           value={editorHtml}
@@ -100,14 +145,15 @@ class Editor extends React.Component {
           bounds={'.App'}
         />
         <button
-          style={{color: 'red'}} 
-          ref={node => this.additionalMenu = node}
+          style={this.sideMenuButtonStyle}
+          className="sideMenuButton"
+          ref={node => (this.additionalMenu = node)}
           onClick={this.handleFocus}
         >
-          test
+          +
         </button>
       </Fragment>
-     )
+    );
   }
 }
 

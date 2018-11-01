@@ -7,9 +7,9 @@ Quill.register('modules/imageDrop', ImageDrop);
 
 const Link = Quill.import('formats/link');
 Link.sanitize = function(url) {
-  console.log(url)
+  console.log(url);
   return url;
-}
+};
 
 /* 
  * Quill modules to attach to editor
@@ -18,15 +18,15 @@ Link.sanitize = function(url) {
  */
 
 const popOverMenu = [
-  [{'header': '2'}],
-  [{ 'color': ['black', 'red', 'green', 'blue'] }],
+  [{ header: '2' }],
+  [{ color: ['black', 'red', 'green', 'blue'] }],
   ['bold', 'italic', 'underline', 'strike', 'blockquote'],
   ['link'],
   ['clean'],
 ];
 
 const sideMenu = [
-  [{'list': 'ordered'}, {'list': 'bullet'}],
+  [{ list: 'ordered' }, { list: 'bullet' }],
   ['image', 'video'],
   ['clean'],
 ];
