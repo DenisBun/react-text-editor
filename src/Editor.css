@@ -26,6 +26,19 @@
   border-radius: 0.5em;
 }
 
+.ql-bubble .ql-toolbar:not(.sideMenu) .ql-formats:nth-child(-n + 3) {
+  display: none;
+}
+
+.ql-bubble .ql-toolbar.sideMenu {
+  display: flex;
+  justify-content: center;
+}
+
+.ql-bubble .ql-toolbar.sideMenu .ql-formats:nth-child(n + 3) {
+  display: none;
+}
+
 .App .ql-editor {
   min-height: 18em;
   overflow-y: initial;
@@ -70,4 +83,19 @@
   height: 25px;
   width: 25px;
   border: none;
+  opacity: 0.2;
+}
+
+.sideMenuButton:hover {
+  opacity: 1;
+}
+
+.sideMenuButton:focus {
+  outline: none;
+}
+
+.App .ql-editor::after {
+  display: table;
+  clear: both;
+  content: '';
 }

@@ -21,25 +21,21 @@ class Editor extends Component {
   state = {
     editorHtml: this.props.headline,
     theme: 'bubble',
-    isSideMenu: false,
+    sideMenuButtonStyle: {
+      //display: 'none',
+      position: 'absolute',
+      left: 15,
+      top: 100,
+    },
   };
 
-  sideMenuButtonStyle = {
-    display: 'none',
-    position: 'absolute',
-    left: '15px',
-  };
-
-  handleFocus = () => {
-    this.state.isSideMenu
-      ? this.setState({ isSideMenu: false }, () => {
-          this.quill.editor.theme.tooltip.edit();
-          this.quill.editor.theme.tooltip.hide();
-        })
-      : this.setState({ isSideMenu: true }, () => {
-          this.quill.editor.theme.tooltip.edit();
-          this.quill.editor.theme.tooltip.show();
-        });
+  // method for handling side toolbar
+  // it adds the additional class name
+  // and show the toolbar
+  handleSideButtonClick = () => {
+    document.querySelector('.ql-toolbar').classList.add('sideMenu');
+    this.quill.editor.theme.tooltip.edit();
+    this.quill.editor.theme.tooltip.show();
   };
 
   handleChange = html => this.setState({ editorHtml: html });
@@ -49,39 +45,53 @@ class Editor extends Component {
     const selection = window.getSelection
       ? window.getSelection()
       : document.selection.createRange();
-    selection.toString() !== '' &&
-      this.state.isSideMenu &&
-      this.setState({ isSideMenu: false }, () =>
-        this.quill.editor.theme.tooltip.show()
-      );
+
+    const toolbarClassList = document.querySelector('.ql-toolbar').classList;
+
+    // if no text selected and side menu toolbar applied -> reset it to the main toolbar
+    if (selection.type === 'Caret' && toolbarClassList.contains('sideMenu')) {
+      toolbarClassList.remove('sideMenu');
+    }
+    // if (selection.type === 'Caret' && this.state.theme === 'snow') {
+    //   this.setState({ theme: 'bubble' });
+    // }
+
+    // side toolbar is only applied by clicking on a button,
+    // so if text selected and side toolbar applied -> reset it to the main toolbar and show it
+    if (selection.type === 'Range' && toolbarClassList.contains('sideMenu')) {
+      toolbarClassList.remove('sideMenu');
+      this.quill.editor.theme.tooltip.show();
+    }
   };
 
-  handleThemeChange = () => {
-    this.setState((prevState, props) => ({
-      theme: prevState.theme !== 'bubble' ? 'bubble' : 'snow',
-    }));
+  handleThemeChange = e => {
+    console.log(e.path, e.path[3], e.relatedTarget);
+    console.log(e.path[3].className === 'ql-container ql-bubble');
+    setTimeout(() => {
+      e.path.filter(el => el.className === 'ql-container ql-bubble') &&
+        this.setState({ theme: 'snow' });
+    }, 1000);
   };
 
-  handeSideButtonPosition = () => {
-    const cursorBounds = this.quill.editor.getBounds(
-      this.quill.editor.getSelection()
-        ? this.quill.editor.getSelection().index
-        : 1
-    );
-    console.log(cursorBounds);
-    this.sideMenuButtonStyle = {
-      display: 'block',
-      top: cursorBounds.top,
-    };
+  handeSideButtonPosition = e => {
+    console.log(e.pageX, e.pageY);
+    // if (this.state.sideMenuButtonStyle.top - e.pageY < 10)
+    // this.setState({
+    //   sideMenuButtonStyle: {
+    //     ...this.state.sideMenuButtonStyle,
+    //     display: 'block',
+    //     top: e.pageY,
+    //   },
+    // });
   };
 
   componentDidMount() {
     document
-      .querySelector('.quill')
+      .querySelector('.App')
       .addEventListener('mouseup', this.handleAdditionalMenu);
     document
       .querySelector('.quill')
-      .addEventListener('click', this.handeSideButtonPosition);
+      .addEventListener('mouseup', this.handeSideButtonPosition);
 
     // https://github.com/quilljs/quill/issues/109
     this.quill.editor.clipboard.addMatcher(Node.TEXT_NODE, function(
@@ -109,11 +119,10 @@ class Editor extends Component {
   }
 
   componentDidUpdate() {
+    // dynamically change theme for links
     document
-      .querySelectorAll('a')
-      .forEach(a =>
-        a.addEventListener('mouseover', () => this.setState({ theme: 'snow' }))
-      );
+      .querySelectorAll('.ql-editor a')
+      .forEach(a => a.addEventListener('mouseover', this.handleThemeChange));
     this.state.theme === 'snow' &&
       document
         .querySelector('.ql-snow .ql-tooltip')
@@ -124,15 +133,15 @@ class Editor extends Component {
 
   componentWillUnmount() {
     document
-      .querySelector('.quill')
+      .querySelector('.App')
       .removeEventListener('mouseup', this.handleAdditionalMenu);
-    document
-      .querySelector('.quill')
-      .removeEventListener('click', this.handeSideButtonPosition);
+    // document
+    //   .querySelector('.quill')
+    //   .removeEventListener('click', this.handeSideButtonPosition);
   }
 
   render() {
-    const { isSideMenu, theme, editorHtml } = this.state;
+    const { theme, editorHtml } = this.state;
     return (
       <Fragment>
         <ReactQuill
@@ -140,15 +149,15 @@ class Editor extends Component {
           theme={theme}
           onChange={this.handleChange}
           value={editorHtml}
-          modules={quillModules(isSideMenu)}
+          modules={quillModules}
           formats={quilFormats}
           bounds={'.App'}
         />
         <button
-          style={this.sideMenuButtonStyle}
           className="sideMenuButton"
+          style={this.state.sideMenuButtonStyle}
           ref={node => (this.additionalMenu = node)}
-          onClick={this.handleFocus}
+          onClick={this.handleSideButtonClick}
         >
           +
         </button>
