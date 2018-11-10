@@ -5,12 +5,6 @@ import ImageResize from 'quill-image-resize-module';
 Quill.register('modules/imageResize', ImageResize);
 Quill.register('modules/imageDrop', ImageDrop);
 
-const Link = Quill.import('formats/link');
-Link.sanitize = function(url) {
-  console.log(url);
-  return url;
-};
-
 /* 
  * Quill modules to attach to editor
  * See https://quilljs.com/docs/modules/ for complete options

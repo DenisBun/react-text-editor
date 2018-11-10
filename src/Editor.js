@@ -1,12 +1,11 @@
 import React, { Fragment, Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import ReactQuill from 'react-quill';
 import quillModules from './editorModules';
 import quilFormats from './editorFormats';
+import { LinkPopup } from './utils/LinkPopup';
 
 import 'react-quill/dist/quill.bubble.css';
-import 'react-quill/dist/quill.snow.css';
 import './Editor.css';
 
 class Editor extends Component {
@@ -27,18 +26,73 @@ class Editor extends Component {
       left: 15,
       top: 100,
     },
+    showLinkPopup: false,
+    targetLink: {
+      DOMelement: null,
+      linkHref: null,
+    },
+    linkStyle: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+    },
   };
 
   // method for handling side toolbar
   // it adds the additional class name
-  // and show the toolbar
+  // and shows the toolbar
   handleSideButtonClick = () => {
+    if (this.state.showLinkPopup) {
+      this.setState({
+        showLinkPopup: false,
+      });
+    }
     document.querySelector('.ql-toolbar').classList.add('sideMenu');
     this.quill.editor.theme.tooltip.edit();
     this.quill.editor.theme.tooltip.show();
   };
 
-  handleChange = html => this.setState({ editorHtml: html });
+  handleChange = html => {
+    this.setState({ editorHtml: html });
+    if (this.state.showLinkPopup) {
+      this.setState({
+        showLinkPopup: false,
+      });
+    }
+  };
+
+  onTargetLinkHrefChange = e =>
+    this.setState({
+      targetLink: { ...this.state.targetLink, linkHref: e.target.value },
+    });
+
+  setTargetLinkHref = () => {
+    // state contains DOM NODE -> have to mutate
+    this.state.targetLink.DOMelement.href = this.state.targetLink.linkHref;
+  };
+
+  triggerLinkPopup = e => {
+    if (!this.state.showLinkPopup) {
+      this.setState({
+        showLinkPopup: true,
+        linkStyle: {
+          ...this.state.linkStyle,
+          top: e.pageY + 17,
+          left: e.pageX - 150,
+        },
+      });
+    }
+    if (this.state.targetLink.DOMelement !== e.target) {
+      this.setState({
+        showLinkPopup: true,
+        targetLink: {
+          ...this.state.targetLink,
+          linkHref: e.target.href,
+          DOMelement: e.target,
+        },
+      });
+    }
+  };
 
   handleAdditionalMenu = () => {
     // https://stackoverflow.com/a/3545073
@@ -48,13 +102,14 @@ class Editor extends Component {
 
     const toolbarClassList = document.querySelector('.ql-toolbar').classList;
 
+    if (selection.type === 'Range' && this.state.showLinkPopup) {
+      this.setState({ showLinkPopup: false });
+    }
+
     // if no text selected and side menu toolbar applied -> reset it to the main toolbar
     if (selection.type === 'Caret' && toolbarClassList.contains('sideMenu')) {
       toolbarClassList.remove('sideMenu');
     }
-    // if (selection.type === 'Caret' && this.state.theme === 'snow') {
-    //   this.setState({ theme: 'bubble' });
-    // }
 
     // side toolbar is only applied by clicking on a button,
     // so if text selected and side toolbar applied -> reset it to the main toolbar and show it
@@ -62,15 +117,6 @@ class Editor extends Component {
       toolbarClassList.remove('sideMenu');
       this.quill.editor.theme.tooltip.show();
     }
-  };
-
-  handleThemeChange = e => {
-    console.log(e.path, e.path[3], e.relatedTarget);
-    console.log(e.path[3].className === 'ql-container ql-bubble');
-    setTimeout(() => {
-      e.path.filter(el => el.className === 'ql-container ql-bubble') &&
-        this.setState({ theme: 'snow' });
-    }, 1000);
   };
 
   handeSideButtonPosition = e => {
@@ -85,9 +131,15 @@ class Editor extends Component {
     // });
   };
 
+  componentDidUpdate() {
+    document
+      .querySelectorAll('.ql-editor a')
+      .forEach(a => a.addEventListener('click', this.triggerLinkPopup));
+  }
+
   componentDidMount() {
     document
-      .querySelector('.App')
+      .querySelector('.quill')
       .addEventListener('mouseup', this.handleAdditionalMenu);
     document
       .querySelector('.quill')
@@ -118,30 +170,26 @@ class Editor extends Component {
     });
   }
 
-  componentDidUpdate() {
-    // dynamically change theme for links
-    document
-      .querySelectorAll('.ql-editor a')
-      .forEach(a => a.addEventListener('mouseover', this.handleThemeChange));
-    this.state.theme === 'snow' &&
-      document
-        .querySelector('.ql-snow .ql-tooltip')
-        .addEventListener('mouseleave', () => {
-          if (this.state.theme !== 'bubble') this.setState({ theme: 'bubble' });
-        });
-  }
-
   componentWillUnmount() {
     document
-      .querySelector('.App')
+      .querySelector('.quill')
       .removeEventListener('mouseup', this.handleAdditionalMenu);
-    // document
-    //   .querySelector('.quill')
-    //   .removeEventListener('click', this.handeSideButtonPosition);
+    document
+      .querySelector('.quill')
+      .removeEventListener('mouseup', this.handeSideButtonPosition);
+    document
+      .querySelectorAll('.ql-editor a')
+      .forEach(a => a.removeEventListener('click', this.triggerLinkPopup));
   }
 
   render() {
-    const { theme, editorHtml } = this.state;
+    const {
+      theme,
+      editorHtml,
+      targetLink,
+      showLinkPopup,
+      linkStyle,
+    } = this.state;
     return (
       <Fragment>
         <ReactQuill
@@ -156,11 +204,18 @@ class Editor extends Component {
         <button
           className="sideMenuButton"
           style={this.state.sideMenuButtonStyle}
-          ref={node => (this.additionalMenu = node)}
           onClick={this.handleSideButtonClick}
         >
           +
         </button>
+        {showLinkPopup && (
+          <LinkPopup
+            linkStyle={linkStyle}
+            targetLinkHref={targetLink.linkHref}
+            onTargetLinkHrefChange={this.onTargetLinkHrefChange}
+            setTargetLinkHref={this.setTargetLinkHref}
+          />
+        )}
       </Fragment>
     );
   }

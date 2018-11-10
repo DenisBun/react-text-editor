@@ -1,29 +1,29 @@
+*::selection {
+  background: #fff1a6;
+}
+*::-moz-selection {
+  background: #fff1a6;
+}
+*::-webkit-selection {
+  background: #fff1a6;
+}
+
 .App .ql-container {
   color: #090909;
   max-width: 600px;
   margin: 65px auto 45px;
-  box-shadow: rgba(118, 143, 255, 0.1) 0px 16px 24px 0px;
-  margin: 65px auto 45px;
-  border-radius: 4.5px;
-  border-bottom-left-radius: 0.5em;
-  border-bottom-right-radius: 0.5em;
   font-family: 'Noto Sans', sans-serif;
   font-size: 16px;
   text-align: left;
 }
 
-/* Reset snow theme styles and used it just for the link */
-.App .ql-toolbar.ql-snow {
-  display: none;
-}
-
-.App .ql-container.ql-snow {
-  border: none;
-}
-
 /* Bubble Theme */
 .App .ql-bubble .ql-editor {
   border-radius: 0.5em;
+}
+
+.ql-bubble .ql-tooltip {
+  background-color: #090909;
 }
 
 .ql-bubble .ql-toolbar:not(.sideMenu) .ql-formats:nth-child(-n + 3) {
@@ -65,6 +65,22 @@
   font-size: 30px;
   line-height: 41px;
   padding-bottom: 24px;
+  padding-top: 42px;
+}
+
+.App .ql-editor img {
+  padding-top: 24px;
+  padding-bottom: 12px;
+}
+
+.App .ql-editor ul {
+  padding-top: 42px;
+  padding-bottom: 12px;
+}
+
+.App .ql-editor li {
+  padding-top: 42px;
+  padding-bottom: 12px;
 }
 
 .App .ql-editor blockquote {
@@ -78,12 +94,13 @@
 
 .sideMenuButton {
   border-radius: 50%;
-  background-color: black;
+  background-color: #090909;
   color: white;
-  height: 25px;
-  width: 25px;
+  height: 31px;
+  width: 31px;
   border: none;
   opacity: 0.2;
+  font-size: 25px;
 }
 
 .sideMenuButton:hover {
@@ -94,6 +111,7 @@
   outline: none;
 }
 
+/* clearfix for floated images of image-resize-module */
 .App .ql-editor::after {
   display: table;
   clear: both;

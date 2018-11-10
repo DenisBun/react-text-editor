@@ -1,0 +1,41 @@
+.linkPopup {
+  display: flex;
+  justify-content: center;
+  background-color: #090909;
+  width: 305px;
+  height: 53px;
+  border-radius: 25px;
+}
+
+.newLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.newLink:visited {
+  color: white;
+}
+
+.linkPopup input {
+  width: 150px;
+  color: white;
+  background-color: transparent;
+  border: transparent;
+  margin-right: 15px;
+}
+
+.linkPopup input:focus {
+  outline: none;
+}
+
+.saveBtn {
+  color: white;
+  background-color: transparent;
+  border: transparent;
+}
+
+.saveBtn:focus {
+  outline: none;
+}
